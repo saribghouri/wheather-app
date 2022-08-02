@@ -1,37 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-    <link rel="stylesheet" href="index.css">
-</head>
-<body>
-    <section>
-            <div class="container-fluid">
-        <section class="main">
-     
-        </section>
+    <link rel="stylesheet" href="index.css" />
+  </head>
 
-        <section class="inputs">
-
-            <input type="text" placeholder="Enter any city..." id="cityinput">
-            <input type="submit" value="get wheather" id="add">
-         
-            <button placeholder="get wheather" id="add"></button>
-         
-         </section>
-
-         <section class="display">
-            <div class="wrapper">
-                <h2 id="cityoutput"></h2>
-                <p id="description"></p>
-                <p id="temp"></p>
-                <p id="wind"></p>
+  <body>
+    <div class="main">
+      <h1 id="intro">Welcome to Weather App</h1>
+      <div id="weatherDescription">
+        <div class="parent">
+          <div id="weatherContainer" style="margin-top: 150px">
+            <h1 id="cityHeader"></h1>
+            <div id="weatherMain">
+              <div id="temperature"></div>
+              <div id="weatherDescriptionHeader"></div>
+              <div><img id="documentIconImg" /></div>
             </div>
-          </section>
-     </div>
-     <script src="index.js"></script>
-</body>
+            <hr />
+            <div id="windSpeed" class="bottom-details"></div>
+            <div id="humidity" class="bottom-details"></div>
+          </div>
+        </div>
+      </div>
+      <div id="searchContainer">
+        <input
+          class="searchControl"
+          type="text"
+          placeholder="Please Enter City Name"
+          id="searchInput"
+        />
+        <button class="searchControl" id="searchBtn">Go!</button>
+      </div>
+    </div>
+    <script src="index.js"></script>
+  </body>
 </html>

@@ -1,36 +1,92 @@
-var inputval = document.querySelector("#cityinput");
-var btn = document.querySelector("#add");
-var city = document.querySelector("#cityoutput");
-var descrip = document.querySelector("#description");
-var temp = document.querySelector("#temp");
-var wind = document.querySelector("#wind");
+let appId = "71f6779186cc32448b4c412eea65b982";
+let units = "metric";
+let searchMethod; // q means searching as a string.
 
-apik = "3045dd712ffe6e702e3245525ac7fa38";
-
-function convertion(val) {
-  return (val - 273).toFixed(2);
+function getSearch(search) {
+  if (search.length === 5 && Number.parseInt(search) + "" === search)
+    searchMethod = "zip";
+  else searchMethod = "q";
 }
 
-btn.addEventListener("click", function () {
+function searchWeather(search) {
+  getSearch(search);
   fetch(
-    "https://api.openweathermap.org/data/2.5/weather?q=" +
-      inputval.value +
-      "&appid=" +
-      apik
+    `http://api.openweathermap.org/data/2.5/weather?${searchMethod}=${search}&APPID=${appId}&units=${units}`
   )
-    .then((res) => res.json())
-
-    .then((data) => {
-      var nameval = data["name"];
-      var descrip = data["weather"]["0"]["description"];
-      var tempature = data["main"]["temp"];
-      var wndspd = data["wind"]["speed"];
-
-      city.innerHTML = `Weather of <span>${nameval}<span>`;
-      temp.innerHTML = `Temperature: <span>${convertion(tempature)} C</span>`;
-      description.innerHTML = `Sky Conditions: <span>${descrip}<span>`;
-      wind.innerHTML = `Wind Speed: <span>${wndspd} km/h<span>`;
+    .then((result) => {
+      return result.json();
     })
+    .then((res) => {
+      init(res);
+    });
+}
 
-    .catch((err) => alert("You entered Wrong city name"));
+function init(resultFromServer) {
+  switch (resultFromServer.weather[0].main) {
+    case "Clear":
+      document.body.style.backgroundImage = "url('clearPicture.jpg')";
+      break;
+
+    case "Clouds":
+      document.body.style.backgroundImage = "url('cloudyPicture.jpg')";
+      break;
+
+    case "Rain":
+    case "Drizzle":
+      document.body.style.backgroundImage = "url('rainPicture.jpg')";
+      break;
+
+    case "Mist":
+      document.body.style.backgroundImage = "url('mistPicture.jpg')";
+      break;
+
+    case "Thunderstorm":
+      document.body.style.backgroundImage = "url('stormPicture.jpg')";
+      break;
+
+    case "Snow":
+      document.body.style.backgroundImage = "url('snowPicture.jpg')";
+      break;
+
+    default:
+      break;
+  }
+
+  let weatherHeader = document.querySelector("#weatherDescriptionHeader");
+  let temperature = document.querySelector("#temperature");
+  let humidity = document.querySelector("#humidity");
+  let windSpeed = document.querySelector("#windSpeed");
+  let cityHeader = document.querySelector("#cityHeader");
+
+  let weatherIcon = document.querySelector("#documentIconImg");
+  weatherIcon.src =
+    "http://openweathermap.org/img/w/" +
+    resultFromServer.weather[0].icon +
+    ".png";
+
+  let result = resultFromServer.weather[0].description;
+  weatherHeader.innerText = result.charAt(0).toUpperCase() + result.slice(1);
+  temperature.innerHTML = Math.floor(resultFromServer.main.temp) + "&#176;";
+  windSpeed.innerHTML =
+    "Wind Speed: " + Math.floor(resultFromServer.wind.speed) + " meter/s";
+  cityHeader.innerHTML = resultFromServer.name;
+  humidity.innerHTML =
+    "Humidity levels: " + resultFromServer.main.humidity + "%";
+
+  setPositionForWeatherInfo();
+}
+
+function setPositionForWeatherInfo() {
+  let weatherContainer = document.querySelector("#weatherContainer");
+  let ContainerHeight = weatherContainer.clientHeight;
+  let ContainerWidth = weatherContainer.clientWidth;
+
+  weatherContainer.style.left = `calc(50% - ${ContainerWidth / 2}px)`;
+  weatherContainer.style.top = `calc(50% - ${ContainerHeight / 1.3}px)`;
+  weatherContainer.style.visibility = "visible";
+}
+
+document.querySelector("#searchBtn").addEventListener("click", () => {
+  let searchTerm = document.querySelector("#searchInput").value;
+  if (searchTerm) searchWeather(searchTerm);
 });
